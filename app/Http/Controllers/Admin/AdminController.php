@@ -8,6 +8,7 @@ use App\Models\Admin;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Validator;
+use Intervention\Image\Facades\Image;
 
 class AdminController extends Controller
 {
@@ -85,7 +86,8 @@ class AdminController extends Controller
             //validation
             $rules = [
                 'admin_name'=> 'required|regex:/^[\pL\s\-]+$/u|max:255',
-                'admin_mobile'=> 'required|numeric|digits:10'
+                'admin_mobile'=> 'required|numeric|digits:10',
+                'admin_image'=> 'image',
             ];
 
             $customMessages = [
@@ -95,13 +97,31 @@ class AdminController extends Controller
                 'admin_mobile.required'=> "Mobile is required",
                 'admin_mobile.numeric'=> "Valid mobile is required",
                 'admin_mobile.digits'=> "Valid mobile is required",
+                'admin_image.image'=> "Valid Image is required",
             ];
 
             $this->validate($request, $rules, $customMessages );
 
+            //Upload Admin Image 
+            if($request->hasFile("admin_image")){
+                $image_tmp = $request->file("admin_image");
+                if($image_tmp -> isValid()){
+                    // get Image Extension
+                    $extension = $image_tmp->getClientOriginalExtension();
+                    //Genarate New Image Name
+                    $imageName = rand(111,99999).'.'.$extension;
+                    $image_path = 'admin/images/photos/'.$imageName;
+                    Image::make ($image_tmp) ->save($image_path);
+                };
+            }else if(!empty($data['current_image'])){
+                $imageName = $data['current_image'];
+            }else{
+                $imageName = '';
+            }
+
             //Update Admin Details
             Admin::where('email',Auth::guard('admin')->user()->email)->update(['name'=> $data['admin_name'],
-            'mobile'=> $data['admin_mobile']]);
+            'mobile'=> $data['admin_mobile'], 'image'=> $imageName]);
             return redirect()->back()->with('success_message','Admin Details has been updated Successfully!');
         }
         return view("admin.update_details");
