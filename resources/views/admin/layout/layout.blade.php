@@ -14,6 +14,9 @@
   <link rel="stylesheet" href="{{ url('admin/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
   <!-- Theme style -->
   <link rel="stylesheet" href="{{ url('admin/css/adminlte.min.css') }}">
+    <!-- Select2 -->
+  <link rel="stylesheet" href="{{ url('admin/plugins/select2/css/select2.min.css') }}">
+  <link rel="stylesheet" href="{{ url('admin/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
 </head>
 <body class="hold-transition dark-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
@@ -64,5 +67,20 @@
 <script src="{{ url('admin/js/pages/dashboard2.js') }}"></script>
 <!-- Custom JS  -->
 <script src="{{ url('admin/js/custom.js') }}"></script>
+<!-- DataTables  & Plugins -->
+<script src="{{ url('admin/plugins/datatables/jquery.dataTables.min.js') }}"></script>
+<script src="{{ url('admin/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+<script src="{{ url('admin/plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
+<script>
+  $(function () {
+    $("#cmspages").DataTable();
+  });
+</script>
+<!-- Select2 -->
+<script src="{{ url('admin/plugins/select2/js/select2.full.min.js') }}"></script>
+<script>
+  //Initialize Select2 Elements
+  $('.select2').select2();
+</script>
 </body>
 </html>
