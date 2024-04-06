@@ -70,7 +70,8 @@
                     &nbsp;&nbsp;
                     <a style="color:#3f6ed3;" href="{{ url('admin/add-edit-cms-page/'.$page['id'])}}"><i class="fas fa-edit"></i></a>
                     &nbsp;&nbsp;
-                    <a style="color:#3f6ed3;" href="{{ url('admin/delete-cms-page/'.$page['id'])}}"><i class="fas fa-trash"></i></a>
+                    <a style="color:#3f6ed3;" class="confirmDelete" name="CMS Page" title="Delete CMS Page" href="javascript:void(0)" record="cms-page" recordid="{{ $page['id']}}"
+                    <?php /* href="{{ url('admin/delete-cms-page/'.$page['id'])}} " */ ?>> <i class="fas fa-trash"></i></a>
                 </td>
                 </tr>
                 @endforeach
