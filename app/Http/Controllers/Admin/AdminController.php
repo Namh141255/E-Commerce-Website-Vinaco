@@ -140,4 +140,102 @@ class AdminController extends Controller
         }
         return view("admin.update_details");
     }
+
+    public function subadmins(){
+        Session::put("page","subadmins");
+        $subadmins = Admin::where('type','subadmin')-> get();
+        return view('admin.subadmins.subadmins')->with(compact('subadmins'));
+    }
+
+    public function updateSubadminStatus(Request $request)
+    {
+        if($request->ajax()){
+            $data = $request->all();
+            // echo "<pre>"; print_r($data); die;
+            if($data['status']=="Active"){
+                $status = 0;
+            }else{
+                $status = 1;
+            }
+            Admin::where("id", $data['subadmin_id'])->update(['status'=>$status]);
+            return response()->json(['status'=> $status,'subadmin_id'=> $data['subadmin_id']]); 
+        }
+    }
+
+    public function addEditSubadmin(Request $request, $id = null){
+        Session::put("page","subadmins");
+        if($id == ""){
+            $title = "Add Subadmin";
+            $subadmindata = new Admin;
+            $message = "Subadmin added successfully";
+        }else{
+            $title = "Edit Subadmin";
+            $subadmindata = Admin::find($id);
+            $message = "Subadmin edited successfully";
+        }
+
+        if($request -> isMethod("post")){
+            $data = $request -> all();
+            // echo "<pre>"; print_r($data); die;
+
+            if($id==""){
+                $subadminCount = Admin::where('email',$data['email'])->count();
+                if($subadminCount> 0){
+                    return redirect()->back()->with('error_message','Subadmin email already exists!');
+                }
+            }
+
+             // Subadmin Validations
+             $rules = [
+                'name' => 'required',
+                'mobile'=> 'required|numeric',
+                'image'=> 'image',
+            ];
+            $customMessages = [
+                'name.required'=> 'Name is required',
+                'mobile.required'=> 'Mobile is required',
+                'mobile.numeric'=> 'Valid Mobile is required',
+                'image.image'=> 'Valid Image is required',
+            ];
+            $this->validate($request,$rules,$customMessages);
+
+            //Upload Subadmin Image 
+            if($request->hasFile("image")){
+                $image_tmp = $request->file("image");
+                if($image_tmp -> isValid()){
+                    // get Image Extension
+                    $extension = $image_tmp->getClientOriginalExtension();
+                    //Genarate New Image Name
+                    $imageName = rand(111,99999).'.'.$extension;
+                    $image_path = 'admin/images/photos/'.$imageName;
+                    Image::make ($image_tmp) ->save($image_path);
+                };
+            }else if(!empty($data['current_image'])){
+                $imageName = $data['current_image'];
+            }else{
+                $imageName = '';
+            }
+
+            $subadmindata->image = $imageName;
+            $subadmindata->name = $data['name'];
+            $subadmindata->mobile = $data['mobile'];
+            if($id == ""){
+                $subadmindata->email = $data["email"];
+                $subadmindata->type = 'subadmin';
+            }
+            if($data['password']!=""){
+                $subadmindata->password = bcrypt($data["password"]);
+            }
+            $subadmindata->save();
+            return redirect('admin/subadmins')->with('success_message',$message);
+        }
+    return view('admin.subadmins.add_edit_subadmin')->with(compact('title','subadmindata'));
+}
+
+    public function deleteSubadmin($id)
+    {
+        //Delete Sub Admin
+        Admin::where('id', $id)->delete();
+        return redirect()->back()->with('success_message','Subadmin deleted successfully');
+    }
 }
