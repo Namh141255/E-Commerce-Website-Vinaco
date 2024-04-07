@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Admin;
+use App\Models\AdminsRole;
+use GuzzleHttp\Psr7\Message;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Validator;
@@ -230,12 +232,60 @@ class AdminController extends Controller
             return redirect('admin/subadmins')->with('success_message',$message);
         }
     return view('admin.subadmins.add_edit_subadmin')->with(compact('title','subadmindata'));
-}
+    }
 
     public function deleteSubadmin($id)
     {
         //Delete Sub Admin
         Admin::where('id', $id)->delete();
         return redirect()->back()->with('success_message','Subadmin deleted successfully');
+    }
+
+    public function updateRole($id, Request $request){
+
+
+        if($request-> isMethod('post')){
+            $data = $request->all();
+            // echo "<pre>"; print_r($data); die;
+            
+            //Delete All earlier roles for Subadmin
+            AdminsRole::where('subadmin_id', $id)->delete();
+
+            //Add new roles for Subadmin
+            foreach ($data as $key => $value) {
+                if(isset($value['view'])){
+                    $view = $value['view'];
+                }else{
+                    $view = 0;
+                }
+                if(isset($value['edit'])){
+                    $edit = $value['edit'];
+                }else{
+                    $edit = 0;
+                }
+                if(isset($value['full'])){
+                    $full = $value['full'];
+                }else{
+                    $full = 0;
+                }
+            }
+
+            $role = new AdminsRole;
+            $role-> subadmin_id = $id;
+            $role-> module = $key;
+            $role-> view_access = $view;
+            $role-> edit_access = $edit;
+            $role-> full_access = $full;
+            $role->save();
+
+            $message = "Subadmin Roles updated successfully";
+            return redirect()->back()->with('success_message', $message);
+        }
+        $subadminRoles = AdminsRole::where('subadmin_id', $id)->get()->toArray();
+        $subadminDetails = Admin::where('id', $id)->first()->toArray();
+        $title = "Update ".$subadminDetails['name']." Subadmin Roles/Persmissions";
+        // dd($subadminRoles);
+
+        return view('admin.subadmins.update_roles')->with(compact('title','id','subadminRoles'));
     }
 }
