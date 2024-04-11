@@ -62,8 +62,8 @@
                 <div class="card-body">
                   <div class="form-group">
                     <label for="email">Email</label>
-                    <input @if($subadmindata['id']!="") disabled="" style="background-color: #666666;" @else required="" @endif type="email" class="form-control" id="email" name="email" placeholder="Enter Subadmin Email" @if(!empty($subadmindata['email'])) 
-                    value="{{ $subadmindata['email']}}" @endif>
+                    <input @if($subadmindata['id']!="") disabled="" style="background-color: #666666;" @else required="" @endif type="email" class="form-control" 
+                    id="email" name="email" placeholder="Enter Subadmin Email" @if(!empty($subadmindata['email'])) value="{{ $subadmindata['email']}}" @endif>
                   </div>
                   <div class="form-group">
                     <label for="password">Password</label>

@@ -70,11 +70,11 @@ class CmsController extends Controller
         if($id == ""){
             $title = "Add CMS Page";
             $cmspage = new CmsPage;
-            $message = "CMS Page added successfully";
+            $message = "CMS Page added successfully!";
         }else{
             $title = "Edit CMS Page";
             $cmspage = CmsPage::find($id);
-            $message = "CMS Page edited successfully";
+            $message = "CMS Page edited successfully!";
         }
 
         if($request -> isMethod("post")){

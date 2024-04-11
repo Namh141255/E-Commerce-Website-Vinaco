@@ -79,8 +79,8 @@
                 <p>Update Admin Details</p>
             </a>
             </li>
-            
         </ul>
+        </li>
         @if(Session::get('page')=="subadmins")
             @php $active ="active" @endphp
         @else
@@ -94,10 +94,9 @@
             </p>
         </a>
         </li>
-        </li>
 
         @endif
-        
+
         @if(Session::get('page')=="cms-pages")
             @php $active ="active" @endphp
         @else
@@ -112,6 +111,45 @@
             <span class="badge badge-info right">6</span> -->
             </p>
         </a>
+        </li>
+
+        @if(Session::get('page')=="categories" || Session::get('page')=="products")
+            @php $active ="active" @endphp
+        @else
+            @php $active = "" @endphp
+        @endif
+        <li class="nav-item menu-open">
+        <a href="#" class="nav-link {{$active}}">
+            <i class="nav-icon fas fa-th"></i>
+            <p>
+            Categories
+            <i class="right fas fa-angle-left"></i>
+            </p>
+        </a>
+        <ul class="nav nav-treeview">
+        @if(Session::get('page')=="categories")
+            @php $active ="active" @endphp
+        @else
+            @php $active = "" @endphp
+        @endif
+            <li class="nav-item">
+            <a href="{{ url('admin/categories')}}" class="nav-link {{$active}}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Categories</p>
+            </a>
+            </li>
+            @if(Session::get('page')=="products")
+                @php $active ="active" @endphp
+            @else
+                @php $active = "" @endphp
+            @endif
+            <li class="nav-item">
+            <a href="{{ url('admin/products')}}" class="nav-link {{$active}}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Products</p>
+            </a>
+            </li>
+        </ul>
         </li>
     </ul>
     </nav>
