@@ -48,6 +48,13 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function
         Route::match(['get','post'],'add-edit-category/{id?}','CategoryController@addEditCategory');
         Route::get('delete-category/{id?}','CategoryController@deleteCategory');
         Route::get('delete-category-image/{id?}','CategoryController@deleteCategoryImage');
+
+        //Products
+        Route::get('products','ProductsController@products');
+        Route::post('update-product-status','ProductsController@updateProductStatus');
+        Route::get('delete-product/{id?}','ProductsController@deleteProduct');
+        Route::get('delete-product-video/{id?}','ProductsController@deleteProductVideo');
+        Route::match(['get','post'],'add-edit-product/{id?}','ProductsController@addEditProduct');
     });
         
 });
