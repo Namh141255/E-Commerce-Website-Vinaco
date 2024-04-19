@@ -102,12 +102,12 @@
                   </div>
                   @php $familyColors = \App\Models\Color::colors() @endphp
                   <div class="form-group">
-                    <label for="family_color">Family Color</label>
-                    <select name="family_color" class="form-control">
+                    <label for="family_color">Family Color*</label>
+                    <select name="family_color" class="form-control" required="">
                     <option value="">Select</option>
                     @foreach($familyColors as $color)
-                    <option value={{ $color['color_name'] }} @if(!empty(@old('family_color')) && @old('family_color') == $color['color_name'])) selected="" @elseif(!empty($product['family_color']) 
-                    && $product['family_color'] == $color['color_name']) selected="" @endif>{{ $color['color_name'] }}</option>
+                    <option value="{{$color['color_name']}}" @if(!empty(@old('family_color')) && @old('family_color')==$color['color_name']) selected="" 
+                    @elseif(!empty($product['family_color']) && $product['family_color']==$color['color_name']) selected="" @endif>{{$color['color_name']}}</option>
                     @endforeach
                     </select>
                   </div>
@@ -132,6 +132,22 @@
                     @if(!empty($product['product_weight'])) value= "{{ $product['product_weight'] }}" @else value="{{ @old('product_weight') }}" @endif>
                   </div>
                   <div class="form-group">
+                    <label for="product_images">Product Image's</label>
+                    <input type="file" class="form-control" id="product_images" name="product_images[]" multiple="">
+                    <table cellpadding="10" cellspacing="10" border="1" style="margin: 10px;" ><tr>
+                    @foreach($product['images'] as $image)
+                      <td style="background-color: #f9f9f9;">
+                      <a target="_blank" href="{{ url('front/images/products/small/'.$image['image']) }}"
+                      ><img style="width: 80px;" src="{{ asset('front/images/products/small/'.$image['image']) }}"></a>&nbsp;
+                      <input type="hidden" name="image[]" value="{{$image['image']}}">
+                      <input style="width: 30px;" type="text" name="image_sort[]" value="{{$image['image_sort']}}">
+                      <a style="color:#3f6ed3;" class="confirmDelete" title="Delete Product Image"  href="javascript:void(0)" record="product-image" 
+                      recordid="{{ $image['id']}}"><i class="fas fa-trash"></i></a>
+                      </td>
+                    @endforeach
+                    </tr></table>
+                  </div>
+                  <div class="form-group">
                     <label for="product_video">Product Video</label>
                     <input type="file" class="form-control" id="product_video" name="product_video">
                     @if(!empty($product['product_video']))
@@ -139,6 +155,57 @@
                     <a class="confirmDelete" title="Delete Product Video"  href="javascript:void(0)" record="product-video" 
                     recordid="{{ $product['id']}}"> Delete </a>
                     @endif
+                  </div>
+                  <div class="form-group">
+                  <label>Added Attributes</label>
+                  <table style="background-color: #52585e; width: 50%;" cellpadding="5">
+                    <tr>
+                      <th>ID</th>
+                      <th>Style</th>
+                      <th>SKU</th>
+                      <th>Price</th>
+                      <th>Stock</th>
+                      <th>Actions</th>
+                    </tr>
+                    @foreach($product['attributes'] as $attribute)
+                    <input type="hidden" name="attributeId[]" value="{{ $attribute['id'] }}">
+                    <tr>
+                      <td>{{ $attribute['id'] }}</td>
+                      <td>{{ $attribute['style'] }}</td>
+                      <td>{{ $attribute['sku'] }}</td>
+                      <td>
+                        <input style="width: 100px;" type="number" name="price[]" value="{{ $attribute['price'] }}">
+                      </td>
+                      <td>
+                      <input style="width: 100px;" type="number" name="stock[]" value="{{ $attribute['stock'] }}">
+                      </td>
+                      <td>
+                        @if($attribute['status']==1)
+                        <a class="updateAttributeStatus" id="attribute-{{ $attribute['id']}}" attribute_id="{{ $attribute['id']}}" style="color:#3f6ed3" href="javascript:void(0)">
+                        <i class="fas fa-toggle-on" status="Active"></i></a>
+                        @else
+                        <a class="updateAttributeStatus" id="attribute-{{ $attribute['id']}}" attribute_id="{{ $attribute['id']}}" style="color:grey" href="javascript:void(0)">
+                        <i class="fas fa-toggle-off" status="Inactive"></i></a>
+                        @endif
+                        &nbsp;&nbsp;
+                        <a style="color:#3f6ed3;" class="confirmDelete" title="Delete Attribute"  href="javascript:void(0)" record="attribute" recordid="{{ $attribute['id']}}"> 
+                        <i class="fas fa-trash"></i></a>
+                      </td>
+                    </tr>
+                    @endforeach
+                  </table>
+                  </div>
+                  <div class="form-group">
+                  <label>Add Attributes</label>
+                    <div class="field_wrapper">
+                      <div>
+                        <input type="text" name="style[]" id="style" placeholder="Style" style="width: 120px;"/>
+                        <input type="text" name="sku[]" id="sku" placeholder="SKU" style="width: 120px;"/>
+                        <input type="text" name="price[]" id="price" placeholder="Price" style="width: 120px;"/>
+                        <input type="text" name="stock[]" id="stock" placeholder="Stock" style="width: 120px;"/>
+                        <a href="javascript:void(0);" class="add_button" title="Add field">Add</a>
+                      </div>
+                    </div>
                   </div>
                   <div class="form-group">
                     <label for="material">Material</label>

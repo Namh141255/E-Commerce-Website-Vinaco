@@ -22,4 +22,12 @@ class Product extends Model
         $productsFilters['piecesArray'] = array('1 pcs','50 pcs','100 pcs','300 pcs','1000 pcs');
         return $productsFilters;
     }
+
+    public function images(){
+        return $this->hasMany('App\Models\ProductsImage');
+    }
+
+    public function attributes(){
+        return $this->hasMany('App\Models\ProductsAttribute');
+    }
 }

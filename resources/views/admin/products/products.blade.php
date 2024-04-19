@@ -68,19 +68,19 @@
                     @endif
                 </td>
                 <td>
-                        @if($product['status']==1)
-                        <a class="updateProductStatus" id="product-{{ $product['id']}}" product_id="{{ $product['id']}}" style="color:#3f6ed3" href="javascript:void(0)">
-                        <i class="fas fa-toggle-on" status="Active"></i></a>
-                        @else
-                        <a class="updateProductStatus" id="product-{{ $product['id']}}" product_id="{{ $product['id']}}" style="color:grey" href="javascript:void(0)">
-                        <i class="fas fa-toggle-off" status="Inactive"></i></a>
-                        @endif
-                        &nbsp;&nbsp;
-                        <a style="color:#3f6ed3;" href="{{ url('admin/add-edit-product/'.$product['id']) }}"><i class="fas fa-edit"></i></a>
-                        &nbsp;&nbsp;
-                        <a style="color:#3f6ed3;" class="confirmDelete" title="Delete Product"  href="javascript:void(0)" record="product" recordid="{{ $product['id']}}"> 
-                        <i class="fas fa-trash"></i></a>
-                </td>
+                    @if($product['status']==1)
+                    <a class="updateProductStatus" id="product-{{ $product['id']}}" product_id="{{ $product['id']}}" style="color:#3f6ed3" href="javascript:void(0)">
+                    <i class="fas fa-toggle-on" status="Active"></i></a>
+                    @else
+                    <a class="updateProductStatus" id="product-{{ $product['id']}}" product_id="{{ $product['id']}}" style="color:grey" href="javascript:void(0)">
+                    <i class="fas fa-toggle-off" status="Inactive"></i></a>
+                    @endif
+                    &nbsp;&nbsp;
+                    <a style="color:#3f6ed3;" href="{{ url('admin/add-edit-product/'.$product['id']) }}"><i class="fas fa-edit"></i></a>
+                    &nbsp;&nbsp;
+                    <a style="color:#3f6ed3;" class="confirmDelete" title="Delete Product"  href="javascript:void(0)" record="product" recordid="{{ $product['id']}}"> 
+                    <i class="fas fa-trash"></i></a>
+            </td>
                 </tr>
                 @endforeach
                 </tbody>

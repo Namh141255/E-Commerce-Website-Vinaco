@@ -6,7 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\ProductsAttribute;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\DB;
+use Intervention\Image\Facades\Image;
+use App\Models\ProductsImage;
+
 
 class ProductsController extends Controller
 {
@@ -46,7 +51,8 @@ class ProductsController extends Controller
             $message = "Product added successfully!";
         }else{
             $title = "Edit Product";
-            $product = Product::find($id);
+            $product = Product::with(['images','attributes'])->find($id);
+            // dd($product);
             $message = "Product edited successfully!";
         }
 
@@ -148,11 +154,94 @@ class ProductsController extends Controller
             }
             $product->status = 1;
             $product->save();
-            return redirect('admin/products')->with('success_message',$message);
 
+            if($id==""){
+                $product_id = DB::getPdo()->lastInsertId();
+            }else{
+                $product_id = $id;
+            }
+
+            //Upload Product Images
+            if($request->hasFile('product_images')){
+                $images = $request->file('product_images');
+                // echo "<pre>"; print_r($images); die;
+
+                foreach ($images as $key => $image) {
+                    // Generate Temp Image
+                    $image_temp = Image::make($image);  
+
+                    //Get Image Extension
+                    $extension = $image->getClientOriginalExtension();
+
+                    //Generate new Image Name
+                    $imageName = 'product-'.rand(1111,99999999).'.'.$extension;
+
+                    // Image Path for Small, Medium and Large Images
+                    $largeImagePath = 'front/images/products/large/'.$imageName;
+                    $mediumImagePath = 'front/images/products/medium/'.$imageName;
+                    $smallImagePath = 'front/images/products/small/'.$imageName;
+
+                    // Upload the large, medium and small Images after Resize
+                    Image::make($image_temp)->resize(1040,1200)->save($largeImagePath);
+                    Image::make($image_temp)->resize(520,600)->save($mediumImagePath);
+                    Image::make($image_temp)->resize(260,300)->save($smallImagePath);
+
+                    // Insert Image  Name in products_images table 
+                    $image = new ProductsImage;
+                    $image -> image = $imageName;
+                    $image -> product_id = $product_id;
+                    $image -> status = 1;
+                    $image -> save();
+                }
+            }
+
+            // Sort Products Images
+            if($id!=''){
+                if(isset($data['image'])){
+                    foreach ($data['image'] as $key => $image) {
+                        ProductsImage::where(['product_id'=>$id,'image'=>$image])->update(['image_sort'=>$data['image_sort'][$key]]);
+                    }
+                }
+            }
+
+            //Product Attribute Validations
+            foreach ($data['sku'] as $key => $value) {
+                if(!empty($value)){
+                    //SKU already exists check
+                    $countSKU = ProductsAttribute::where('sku',$value)->count();
+                    if($countSKU > 0){
+                        $message = "SKU already exists. Please add another SKU";
+                        return redirect()->back()->with('success_message',$message);
+                    }
+                    //Slyte already exists check
+                    $countStyle = ProductsAttribute::where(['product_id'=>$id,'style'=>$data['style'][$key]])->count();
+                    if($countStyle > 0){
+                        $message = "Style already exists. Please add another Style";
+                        return redirect()->back()->with('success_message',$message);
+                    }
+
+                    $attribute = new ProductsAttribute;
+                    $attribute->product_id = $product_id;
+                    $attribute->sku = $value;
+                    $attribute->style = $data['style'][$key];
+                    $attribute->price = $data['price'][$key];
+                    $attribute->stock = $data['stock'][$key];
+                    $attribute->status = 1;
+                    $attribute->save();
+                }
+            }
+
+            //Edit Product Attributes
+            foreach ($data['attributeId'] as $akey => $attribute) {
+                if(!empty($attribute)){
+                    ProductsAttribute::where(['id'=>$data['attributeId'][$akey]])->update(['price'=> $data['price'][$akey],'stock'=> $data['stock'][$akey]]);
+                }
+            }
+
+            return redirect('admin/products')->with('success_message',$message);
         }
 
-        // get categories and their Sub categories
+        // get categories and their Sub  categories
         $getCategories = Category::getCategories();
 
         //Product Filters
@@ -173,7 +262,60 @@ class ProductsController extends Controller
         }
         Product::where('id',$id)->update(['product_video'=> '']);
 
-        $message = 'Product Video has been deleted';
+        $message = 'Product Video has been deleted successfully!';
         return redirect()->back()->with('success_message',$message);
+    }
+
+    public function deleteProductImage($id){
+        //Get Product Image
+        $productImage = ProductsImage::select('image')->where('id',$id)->first();
+
+        //Get Product Image Path
+        $small_image_path = 'front/images/products/small/';
+        $medium_image_path = 'front/images/products/medium/';
+        $large_image_path = 'front/images/products/large/';
+
+        //Delete Product Small Image from folder if exist
+        if(file_exists($small_image_path.$productImage->image)){
+            unlink($small_image_path.$productImage->image);
+        }
+
+         //Delete Product medium Image from folder if exist
+         if(file_exists($medium_image_path.$productImage->image)){
+            unlink($medium_image_path.$productImage->image);
+        }
+
+         //Delete Product large Image from folder if exist
+         if(file_exists($large_image_path.$productImage->image)){
+            unlink($large_image_path.$productImage->image);
+        }
+
+        //Delete Product Image from ProductsImages table if exist
+        $productImage::where('id',$id)->delete();
+
+        $message = 'Product Image has been deleted successfully!';
+        return redirect()->back()->with('success_message',$message);
+    }
+
+    public function updateAttributeStatus(Request $request)
+    {
+        if($request->ajax()){
+            $data = $request->all();
+            // echo "<pre>"; print_r($data); die;
+            if($data['status']=="Active"){
+                $status = 0;
+            }else{
+                $status = 1;
+            }
+            ProductsAttribute::where("id", $data['attribute_id'])->update(['status'=>$status]);
+            return response()->json(['status'=> $status,'attribute_id'=> $data['attribute_id']]); 
+        }
+    }
+
+    public function deleteAttribute($id)
+    {
+        //Delete Attribute
+        ProductsAttribute::where('id', $id)->delete();
+        return redirect()->back()->with('success_message','Attribute deleted successfully!');
     }
 }
