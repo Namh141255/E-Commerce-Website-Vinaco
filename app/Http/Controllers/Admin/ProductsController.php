@@ -6,18 +6,35 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\AdminsRole;
 use App\Models\ProductsAttribute;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Intervention\Image\Facades\Image;
 use App\Models\ProductsImage;
+use Illuminate\Support\Facades\Auth;
 
 
 class ProductsController extends Controller
 {
     public function products(){
+        Session::put("page","products");
         $products = Product::with('category')->get()->toArray();
-        return view('admin.products.products')->with(compact('products'));
+
+        //Set Admin/Subadmins Permission for Products
+        $productsModuleCount = AdminsRole::where(["subadmin_id"=> Auth::guard('admin')->user()->id, 'module'=>'products'])->count();
+        $productsModule = array();
+        if(Auth::guard('admin')->user()->type=='admin'){
+            $productsModule['view_access']=1;
+            $productsModule['edit_access']=1;
+            $productsModule['full_access']=1;
+        }else if($productsModuleCount==0){
+            $message = "This feature is restricted for you!";
+            return redirect('admin/dashboard')->with('error_message', $message);
+        }else{
+            $productsModule = AdminsRole::where(["subadmin_id"=> Auth::guard('admin')->user()->id, 'module'=>'products'])->first()->toArray();
+        }
+        return view("admin.products.products")->with(compact("products","productsModule"));
     }
 
     public function updateProductStatus(Request $request)
@@ -59,9 +76,7 @@ class ProductsController extends Controller
         if($request -> isMethod("post")){
             $data = $request -> all();
             // echo "<pre>"; print_r($data); die;
-        
-            // Product Validations
-            // if($id == ""){
+
             $rules = [
                 'category_id' => 'required',
                 'product_name' => 'required|regex:/^[\pL\s\-]+$/u|max:255',
@@ -70,12 +85,6 @@ class ProductsController extends Controller
                 'product_color' => 'required|regex:/^[\pL\s\-]+$/u|max:255',
                 'family_color'=> 'required|regex:/^[\pL\s\-]+$/u|max:255',
             ];
-            // }else{
-            //     $rules = [
-            //         'category_name' => 'required',
-            //         'url'=> 'required',
-            //     ];
-            // }
 
             $customMessages = [
                 'category_id.required'=> 'Category is required',

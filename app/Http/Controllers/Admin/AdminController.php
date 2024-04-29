@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
+use App\Models\Product;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Admin;
 use App\Models\AdminsRole;
@@ -17,7 +20,10 @@ class AdminController extends Controller
 {
     public function dashboard(){
         Session::put("page","dashboard");
-        return view('admin.dashboard');
+        $categoriesCount = Category::get()->count();
+        $productsCount = Product::get()->count();
+        $usersCount = User::get()->count();
+        return view('admin.dashboard')->with(compact('categoriesCount','productsCount','usersCount'));
     }
 
     public function login(Request $request){
@@ -268,15 +274,19 @@ class AdminController extends Controller
                 }else{
                     $full = 0;
                 }
+
+                AdminsRole::where('subadmin_id', $id)->insert(['subadmin_id'=> $id, 'module'=> $key,'view_access'=> $view, 'edit_access'=> $edit, 'full_access'=> $full]);
             }
 
-            $role = new AdminsRole;
-            $role-> subadmin_id = $id;
-            $role-> module = $key;
-            $role-> view_access = $view;
-            $role-> edit_access = $edit;
-            $role-> full_access = $full;
-            $role->save();
+            // $role = new AdminsRole;
+            // $role-> subadmin_id = $id;
+            // $role-> module = $key;
+            // $role-> view_access = $view;
+            // $role-> edit_access = $edit;
+            // $role-> full_access = $full;
+            // $role->save();
+
+
 
             $message = "Subadmin Roles updated successfully";
             return redirect()->back()->with('success_message', $message);

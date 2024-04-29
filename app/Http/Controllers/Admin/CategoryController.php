@@ -17,13 +17,13 @@ class CategoryController extends Controller
         $categories = Category::with('parentcategory')->get();
 
         //Set Admin/Subadmins Permission for Categories
-        $cotegoriesModuleCount = AdminsRole::where(["subadmin_id"=> Auth::guard('admin')->user()->id, 'module'=>'categories'])->count();
+        $categoriesModuleCount = AdminsRole::where(["subadmin_id"=> Auth::guard('admin')->user()->id, 'module'=>'categories'])->count();
         $categoriesModule = array();
         if(Auth::guard('admin')->user()->type=='admin'){
             $categoriesModule['view_access']=1;
             $categoriesModule['edit_access']=1;
             $categoriesModule['full_access']=1;
-        }else if($cotegoriesModuleCount==0){
+        }else if($categoriesModuleCount==0){
             $message = "This feature is restricted for you!";
             return redirect('admin/dashboard')->with('error_message', $message);
         }else{

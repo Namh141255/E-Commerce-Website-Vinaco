@@ -37,8 +37,10 @@
         <div class="card">
             <div class="card-header">
             <h3 class="card-title">Product</h3>
+            @if($productsModule['edit_access']==1 || $productsModule['full_access']==1)
             <a style="max-width: 150px; float:right; display: inline-block;" href="{{ url('admin/add-edit-product')}}" 
             class="btn btn-block btn-primary">Add Product</a>
+            @endif
             </div>
             <!-- /.card-header -->
             <div class="card-body">
@@ -68,6 +70,7 @@
                     @endif
                 </td>
                 <td>
+                @if($productsModule['edit_access']==1 || $productsModule['full_access']==1)
                     @if($product['status']==1)
                     <a class="updateProductStatus" id="product-{{ $product['id']}}" product_id="{{ $product['id']}}" style="color:#3f6ed3" href="javascript:void(0)">
                     <i class="fas fa-toggle-on" status="Active"></i></a>
@@ -76,10 +79,15 @@
                     <i class="fas fa-toggle-off" status="Inactive"></i></a>
                     @endif
                     &nbsp;&nbsp;
+                @endif
+                @if($productsModule['edit_access']==1 || $productsModule['full_access']==1)
                     <a style="color:#3f6ed3;" href="{{ url('admin/add-edit-product/'.$product['id']) }}"><i class="fas fa-edit"></i></a>
                     &nbsp;&nbsp;
+                @endif
+                @if($productsModule['full_access']==1)
                     <a style="color:#3f6ed3;" class="confirmDelete" title="Delete Product"  href="javascript:void(0)" record="product" recordid="{{ $product['id']}}"> 
                     <i class="fas fa-trash"></i></a>
+                @endif
             </td>
                 </tr>
                 @endforeach

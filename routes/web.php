@@ -1,6 +1,12 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\Admin\ProductsController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\BannersController;
+use App\Http\Controllers\Admin\CmsController;
+use App\Http\Controllers\Front\IndexController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,52 +24,61 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::namespace('App\Http\Controllers\Front')->group(function () {
+    Route::get('/', [IndexController::class,'index']);
+});
 
 Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function () {
     
     Route::match(['get','post'],'login','AdminController@login');
     Route::group(['middleware'=> ['admin']], function () {
-        Route::get('dashboard','AdminController@dashboard');
-        Route::match(['get','post'],'update-password','AdminController@updatePassword');
-        Route::match(['get','post'],'update-details','AdminController@updateDetails');
-        Route::post('check-current-password','AdminController@checkCurrentPassword');
-        Route::get('logout','AdminController@logout');
+        Route::get('dashboard',[AdminController::class,'dashboard']);
+        Route::match(['get','post'],'update-password',[AdminController::class,'updatePassword']);
+        Route::match(['get','post'],'update-details',[AdminController::class,'updateDetails']);
+        Route::post('check-current-password',[AdminController::class,'checkCurrentPassword']);
+        Route::get('logout',[AdminController::class,'logout']);
 
         //Display CMS Page (CRUD-READ)
-        Route::get('cms-pages','CmsController@index');
-        Route::post('update-cms-page-status','CmsController@update');
-        Route::match(['get','post'],'add-edit-cms-page/{id?}','CmsController@edit');
-        Route::get('delete-cms-page/{id?}','CmsController@destroy');
+        Route::get('cms-pages',[CmsController::class,'index']);
+        Route::post('update-cms-page-status',[CmsController::class,'update']);
+        Route::match(['get','post'],'add-edit-cms-page/{id?}',[CmsController::class,'edit']);
+        Route::get('delete-cms-page/{id?}',[CmsController::class,'destroy']);
 
         //Subadmins
-        Route::get('subadmins','AdminController@subadmins');
-        Route::post('update-subadmin-status','AdminController@updateSubadminStatus');
-        Route::match(['get','post'],'add-edit-subadmin/{id?}','AdminController@addEditSubadmin');
-        Route::get('delete-subadmin/{id?}','AdminController@deleteSubadmin');
-        Route::match(['get','post'],'update-role/{id}','AdminController@updateRole');
+        Route::get('subadmins',[AdminController::class,'subadmins']);
+        Route::post('update-subadmin-status',[AdminController::class,'updateSubadminStatus']);
+        Route::match(['get','post'],'add-edit-subadmin/{id?}',[AdminController::class,'addEditSubadmin']);
+        Route::get('delete-subadmin/{id?}',[AdminController::class,'deleteSubadmin']);
+        Route::match(['get','post'],'update-role/{id}',[AdminController::class,'updateRole']);
 
         //Categories
-        Route::get('categories','CategoryController@categories');
-        Route::post('update-category-status','CategoryController@updateCategoryStatus');
-        Route::match(['get','post'],'add-edit-category/{id?}','CategoryController@addEditCategory');
-        Route::get('delete-category/{id?}','CategoryController@deleteCategory');
-        Route::get('delete-category-image/{id?}','CategoryController@deleteCategoryImage');
+        Route::get('categories',[CategoryController::class,'categories']);
+        Route::post('update-category-status',[CategoryController::class,'updateCategoryStatus']);
+        Route::match(['get','post'],'add-edit-category/{id?}',[CategoryController::class,'addEditCategory']);
+        Route::get('delete-category/{id?}',[CategoryController::class,'deleteCategory']);
+        Route::get('delete-category-image/{id?}',[CategoryController::class,'deleteCategoryImage']);
 
         //Products
-        Route::get('products','ProductsController@products');
-        Route::post('update-product-status','ProductsController@updateProductStatus');
-        Route::get('delete-product/{id?}','ProductsController@deleteProduct');
-        Route::match(['get','post'],'add-edit-product/{id?}','ProductsController@addEditProduct');
+        Route::get('products',[ProductsController::class,'products']);
+        Route::post('update-product-status',[ProductsController::class,'updateProductStatus']);
+        Route::get('delete-product/{id?}',[ProductsController::class,'deleteProduct']);
+        Route::match(['get','post'],'add-edit-product/{id?}',[ProductsController::class,'addEditProduct']);
 
         //Product Images
-        Route::get('delete-product-image/{id?}','ProductsController@deleteProductImage');
+        Route::get('delete-product-image/{id?}',[ProductsController::class,'deleteProductImage']);
 
         //Product Videos
-        Route::get('delete-product-video/{id?}','ProductsController@deleteProductVideo');
+        Route::get('delete-product-video/{id?}',[ProductsController::class,'deleteProductVideo']);
 
         //Product Attributes
-        Route::post('update-attribute-status','ProductsController@updateAttributeStatus');
-        Route::get('delete-attribute/{id?}','ProductsController@deleteAttribute');
+        Route::post('update-attribute-status',[ProductsController::class,'updateAttributeStatus']);
+        Route::get('delete-attribute/{id?}',[ProductsController::class,'deleteAttribute']);
+
+        //Banner
+        Route::get('banners',[BannersController::class,'banners']);
+        Route::post('update-banner-status',[BannersController::class,'updateBannerStatus']);
+        Route::get('delete-banner/{id?}',[BannersController::class,'deleteBanner']);
+        Route::match(['get','post'],'add-edit-banner/{id?}',[BannersController::class,'addEditBanner']);
     });
         
 });

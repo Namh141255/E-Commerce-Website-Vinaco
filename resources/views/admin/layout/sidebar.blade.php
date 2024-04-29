@@ -43,16 +43,16 @@
 
         @if(Auth::guard('admin')->user()->type=='admin')
 
-        @if(Session::get('page')=="update-password" || Session::get('page')=="update-details")
+        @if(Session::get('page')=="update-password" || Session::get('page')=="update-details" || Session::get('page')=="subadmins")
             @php $active ="active" @endphp
         @else
             @php $active = "" @endphp
         @endif
         <li class="nav-item menu-open">
         <a href="#" class="nav-link {{$active}}">
-            <i class="nav-icon fas fa-tachometer-alt"></i>
+            <i class="nav-icon fas fa-users"></i>
             <p>
-            Settings
+            Admin Management
             <i class="right fas fa-angle-left"></i>
             </p>
         </a>
@@ -79,24 +79,39 @@
                 <p>Update Admin Details</p>
             </a>
             </li>
-        </ul>
-        </li>
-        @if(Session::get('page')=="subadmins")
+            @if(Session::get('page')=="subadmins")
             @php $active ="active" @endphp
         @else
             @php $active = "" @endphp
         @endif
         <li class="nav-item">
         <a href="{{ url('admin/subadmins')}}" class="nav-link {{$active}}">
-            <i class="nav-icon fas fa-users"></i>
+            <i class="far fa-circle nav-icon"></i>
             <p>
                 Subadmins
             </p>
         </a>
         </li>
-
         @endif
+        </ul>
+        </li>
 
+        @if(Auth::guard('admin')->user()->type=='admin')
+
+        @if(Session::get('page')=="cms-pages")
+            @php $active ="active" @endphp
+        @else
+            @php $active = "" @endphp
+        @endif
+        <li class="nav-item menu-open">
+        <a href="#" class="nav-link {{$active}}">
+            <i class="nav-icon fas fa-copy"></i>
+            <p>
+            Pages Management
+            <i class="right fas fa-angle-left"></i>
+            </p>
+        </a>
+        <ul class="nav nav-treeview">
         @if(Session::get('page')=="cms-pages")
             @php $active ="active" @endphp
         @else
@@ -104,7 +119,7 @@
         @endif
         <li class="nav-item">
         <a href="{{ url('admin/cms-pages')}}" class="nav-link {{$active}}">
-            <i class="nav-icon fas fa-copy"></i>
+            <i class="far fa-circle nav-icon"></i>
             <p>
             CMS Pages
             <!-- <i class="fas fa-angle-left right"></i>
@@ -112,6 +127,11 @@
             </p>
         </a>
         </li>
+        @endif
+        </ul>
+        </li>
+
+        @if(Auth::guard('admin')->user()->type=='admin')
 
         @if(Session::get('page')=="categories" || Session::get('page')=="products")
             @php $active ="active" @endphp
@@ -122,7 +142,7 @@
         <a href="#" class="nav-link {{$active}}">
             <i class="nav-icon fas fa-th"></i>
             <p>
-            Categories
+            Catalogue Management
             <i class="right fas fa-angle-left"></i>
             </p>
         </a>
@@ -149,6 +169,38 @@
                 <p>Products</p>
             </a>
             </li>
+            @endif
+        </ul>
+        </li>
+
+        @if(Auth::guard('admin')->user()->type=='admin')
+
+        @if(Session::get('page')=="cms-pages")
+            @php $active ="active" @endphp
+        @else
+            @php $active = "" @endphp
+        @endif
+        <li class="nav-item menu-open">
+        <a href="#" class="nav-link {{$active}}">
+            <i class="nav-icon fas fa-images"></i>
+            <p>
+             Banners Management
+            <i class="right fas fa-angle-left"></i>
+            </p>
+        </a>
+        <ul class="nav nav-treeview">
+        @if(Session::get('page')=="banners")
+            @php $active ="active" @endphp
+        @else
+            @php $active = "" @endphp
+        @endif
+        <li class="nav-item">
+        <a href="{{ url('admin/banners')}}" class="nav-link {{$active}}">
+            <i class="far fa-circle nav-icon"></i>
+            <p>Banners</p>
+        </a>
+        </li>
+        @endif
         </ul>
         </li>
     </ul>
