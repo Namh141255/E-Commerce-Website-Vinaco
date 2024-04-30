@@ -286,6 +286,10 @@
                     <label for="is_featured">Featured Item</label>
                     <input type="checkbox" name="is_featured" value="Yes" @if(!empty($product['is_featured']) && $product['is_featured'] == "Yes") checked="" @endif>
                   </div>
+                  <div class="form-group">
+                    <label for="is_bestseller">Best Seller</label>
+                    <input type="checkbox" name="is_bestseller" value="Yes" @if(!empty($product['is_bestseller']) && $product['is_bestseller'] == "Yes") checked="" @endif>
+                  </div>
                 </div>
                 <!-- /.card-body -->
 
