@@ -59,6 +59,10 @@
         <script src="{{ asset('front/js/jquery.shopnav.js') }}"></script>
         <!--====== App ======-->
         <script src="{{ asset('front/js/app.js') }}"></script>
+        <!--====== Custom ======-->
+        <script src="{{ asset('front/js/custom.js') }}"></script>
+        <!--====== Filters ======-->
+        <script src="{{ asset('front/js/filters.js') }}"></script>
         <!--====== Noscript ======-->
         <noscript>
             <div class="app-setting">

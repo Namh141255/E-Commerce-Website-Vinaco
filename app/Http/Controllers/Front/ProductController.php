@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\Category;
@@ -10,7 +11,7 @@ use App\Models\Product;
 
 class ProductController extends Controller
 {
-    public function listing(){
+    public function listing(Request $request){
         $url = Route::getFacadeRoot()->current()->uri;
         $categoryCount = Category::where(['url'=>$url,'status'=>1])->count();
         if($categoryCount> 0){
@@ -19,10 +20,38 @@ class ProductController extends Controller
             // dd($categoryDetails);
 
             //Get Category and their Sub Category Product
-        $categoryProducts = Product::with(['images'])->whereIn('category_id',$categoryDetails['catIds'])->where('status',1) -> orderBy('id','Desc')->paginate(1);
+            $categoryProducts = Product::with(['images'])->whereIn('category_id',$categoryDetails['catIds'])->where('status',1);
             // dd($categoryProducts);
 
-            return view('front.products.listing')->with(compact('categoryDetails','categoryProducts'));
+            //Update Query for Products Sorting
+            if(isset($request['sort'])&& !empty($request['sort'])){
+                if($request['sort']=="product_lastest"){
+                    $categoryProducts->orderBy('id','desc');
+                }else if($request['sort']=="lowest_price"){
+                    $categoryProducts->orderBy('final_price','ASC');
+                }else if($request['sort']=="highest_price"){
+                    $categoryProducts->orderBy('final_price','DESC');
+                }else if($request['sort']=="best_selling"){
+                    $categoryProducts->where('is_bestseller','Yes');
+                }else if($request['sort']=="featured_items"){
+                    $categoryProducts->where('is_featured','Yes');
+                }else if($request['sort']=="discounted_items"){
+                    $categoryProducts->where('product_discount','>',0);
+                }else{
+                    $categoryProducts->orderBy('id','desc');
+                }
+            }
+
+            $categoryProducts = $categoryProducts->paginate(4);
+
+            if($request ->ajax()){
+                return response()->json([
+                    'view'=>(String)View::make('front.products.ajax_products_listing')->with(compact('categoryDetails','categoryProducts','url'))
+                ]);
+            }else{
+                return view('front.products.listing')->with(compact('categoryDetails','categoryProducts','url'));
+            }
+           
         }else{
             abort(404);
         }
