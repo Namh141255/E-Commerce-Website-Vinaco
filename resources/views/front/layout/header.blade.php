@@ -768,7 +768,7 @@ $categories = Category::getCategories();
                             </li>
                             @foreach($categories as $category)
                             <li class="has-dropdown">
-                                <a href="{{ url( $category['url'] )}}">{{$category['category_name']}}<i @if(count($category['subcategories'])) class="fas fa-angle-down u-s-m-l-6" @endif></i></a>
+                                <a href="#">{{$category['category_name']}}<i @if(count($category['subcategories'])) class="fas fa-angle-down u-s-m-l-6" @endif></i></a>
                                 @if(count($category['subcategories']))
                                 <!--====== Dropdown ======-->
                                 <span class="js-menu-toggle"></span>
