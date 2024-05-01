@@ -55,6 +55,14 @@ class ProductController extends Controller
                 -> groupBy('products_attributes.product_id');
             }
 
+            //Update Query for Price Filter
+            if(isset($request['price'])&& !empty($request['price'])){
+                $request['price'] = str_replace("~","-",$request['price']);
+                $prices = explode('-',$request['price']);
+                $count = count($prices);
+                $categoryProducts->whereBetween('products.final_price',[$prices[0], $prices[$count-1]]);
+            }
+
             $categoryProducts = $categoryProducts->paginate(3); // Should multiples of 3
 
             if($request ->ajax()){

@@ -46,11 +46,14 @@
         if(!isset($_GET['style'])){
             $_GET['style'] = "";
         }
+        if(!isset($_GET['price'])){
+            $_GET['price'] = "";
+        }
 
     ?>
     <!--====== Pagination ======-->
    
-    {{ $categoryProducts->appends(['sort'=>$_GET['sort'],'color'=>$_GET['color'],'style'=>$_GET['style']]) ->links() }}
+    {{ $categoryProducts->appends(['sort'=>$_GET['sort'],'color'=>$_GET['color'],'style'=>$_GET['style'],'price'=>$_GET['price']]) ->links() }}
 
     <!--====== End - Pagination ======-->
 </div>
