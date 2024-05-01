@@ -49,11 +49,28 @@
         if(!isset($_GET['price'])){
             $_GET['price'] = "";
         }
+        if(!isset($_GET['Material'])){
+            $_GET['Material'] = "";
+        }
+        if(!isset($_GET['Layers'])){
+            $_GET['Layers'] = "";
+        }
+        if(!isset($_GET['Shape'])){
+            $_GET['Shape'] = "";
+        }
+        if(!isset($_GET['Pieces'])){
+            $_GET['Pieces'] = "";
+        }
+        if(!isset($_GET['Size'])){
+            $_GET['Size'] = "";
+        }
+        
 
     ?>
     <!--====== Pagination ======-->
    
-    {{ $categoryProducts->appends(['sort'=>$_GET['sort'],'color'=>$_GET['color'],'style'=>$_GET['style'],'price'=>$_GET['price']]) ->links() }}
+    {{ $categoryProducts->appends(['sort'=>$_GET['sort'],'color'=>$_GET['color'],'style'=>$_GET['style'],'price'=>$_GET['price'],'Material'=>
+    $_GET['Material'],'Layers'=>$_GET['Layers'],'Shape'=>$_GET['Shape'],'Pieces'=>$_GET['Pieces'],'Size'=>$_GET['Size']]) ->links() }}
 
     <!--====== End - Pagination ======-->
 </div>

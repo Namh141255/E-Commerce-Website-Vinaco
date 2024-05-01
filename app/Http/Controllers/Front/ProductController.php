@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\ProductsFilter;
 
 class ProductController extends Controller
 {
@@ -62,6 +63,15 @@ class ProductController extends Controller
                 $count = count($prices);
                 $categoryProducts->whereBetween('products.final_price',[$prices[0], $prices[$count-1]]);
             }
+
+             //Update Query for Dynamic Filter
+             $filterTypes = ProductsFilter::filterTypes();
+             foreach ($filterTypes as $key => $filter) {
+                if($request -> $filter){
+                    $explodeFilterVals = explode('~',$request -> $filter);
+                    $categoryProducts->whereIn($filter,$explodeFilterVals);
+                }
+             }
 
             $categoryProducts = $categoryProducts->paginate(3); // Should multiples of 3
 
