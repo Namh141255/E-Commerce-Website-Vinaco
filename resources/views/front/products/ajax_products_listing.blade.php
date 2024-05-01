@@ -36,11 +36,18 @@
 </div>
 @endforeach
 <div class="u-s-p-y-60 pagination">
+    <?php 
+        if(!isset($_GET['color'])){
+            $_GET['color'] = "";
+        }
+        if(!isset($_GET['sort'])){
+            $_GET['sort'] = "";
+        }
+
+    ?>
     <!--====== Pagination ======-->
-    @if(isset($request['sort']))
-    {{ $categoryProducts->appends(['sort'=>$request['sort']]) ->links() }}
-    @else
-    {{ $categoryProducts->links() }}
-    @endif
+   
+    {{ $categoryProducts->appends(['sort'=>$_GET['sort'],'color'=>$_GET['color']]) ->links() }}
+
     <!--====== End - Pagination ======-->
 </div>

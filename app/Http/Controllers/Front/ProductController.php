@@ -42,7 +42,13 @@ class ProductController extends Controller
                 }
             }
 
-            $categoryProducts = $categoryProducts->paginate(4);
+            //Update Query for Colors Filter
+            if(isset($request['color'])&& !empty($request['color'])){
+                $colors = explode('~',$request['color']);
+                $categoryProducts->whereIn('products.family_color',$colors);
+            }
+
+            $categoryProducts = $categoryProducts->paginate(3); // Should multiples of 3
 
             if($request ->ajax()){
                 return response()->json([
