@@ -20,7 +20,7 @@ class ProductController extends Controller
             // dd($categoryDetails);
 
             //Get Category and their Sub Category Product
-            $categoryProducts = Product::with(['images'])->whereIn('category_id',$categoryDetails['catIds'])->where('status',1);
+            $categoryProducts = Product::with(['images'])->whereIn('category_id',$categoryDetails['catIds'])->where('products.status',1);
             // dd($categoryProducts);
 
             //Update Query for Products Sorting
@@ -38,7 +38,7 @@ class ProductController extends Controller
                 }else if($request['sort']=="discounted_items"){
                     $categoryProducts->where('product_discount','>',0);
                 }else{
-                    $categoryProducts->orderBy('id','desc');
+                    $categoryProducts->orderBy('products.id','desc');
                 }
             }
 
@@ -46,6 +46,13 @@ class ProductController extends Controller
             if(isset($request['color'])&& !empty($request['color'])){
                 $colors = explode('~',$request['color']);
                 $categoryProducts->whereIn('products.family_color',$colors);
+            }
+
+            //Update Query for Style Filter
+            if(isset($request['style'])&& !empty($request['style'])){
+                $styles = explode('~',$request['style']);
+                $categoryProducts->join('products_attributes','products_attributes.product_id','=','products.id')->whereIn('products_attributes.style',$styles)
+                -> groupBy('products_attributes.product_id');
             }
 
             $categoryProducts = $categoryProducts->paginate(3); // Should multiples of 3

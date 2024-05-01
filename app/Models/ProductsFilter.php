@@ -17,4 +17,11 @@ class ProductsFilter extends Model
         // dd($getProductColors);
         return $getProductColors;
     }
+
+    public static function getStyles($catIds){
+        $getProductIds = Product::select('id')->whereIn('category_id',$catIds)->pluck('id');
+        $getProductStyles = ProductsAttribute::select('style')->where('status',1)->whereIn('id',$getProductIds)->groupBy('style')->pluck('style');
+        // dd($getProductStyles);
+        return $getProductStyles; 
+    }
 }
