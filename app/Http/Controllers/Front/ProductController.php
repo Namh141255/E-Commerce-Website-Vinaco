@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Route;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductsFilter;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -85,6 +87,63 @@ class ProductController extends Controller
            
         }else{
             abort(404);
+        }
+    }
+
+    public function detail($id){
+        $productCount = Product::where('status',1)->where('id',$id)->count();
+        if($productCount==0){
+            abort(404);
+        }
+        $productDetails = Product::with(['category','attributes'=>function($query){
+            $query->where('stock','>',0)->where('status',1);
+        },'images'])->find($id)->toArray();
+        // dd($productDetails);
+
+        //Get Category Details
+        $categoryDetails = Category::categoryDetails($productDetails['category']['url']);
+
+        //Get Group Product (Product Colors)
+        $groupProducts = array();
+        if(!empty($productDetails['group_code'])){
+            $groupProducts = Product::select('id','product_color')->where('id','!=',$id)->where(['group_code'=>$productDetails['group_code'], 'status'=> 1])->get()->toArray();
+            // dd($groupProducts);
+        }
+
+        $relatedProducts = Product::with('images')->where('category_id',$productDetails['category']['id'])->where('id','!=',$id)->limit(4)->inRandomOrder()->get()->toArray();
+        // dd($productDetails);
+        
+        //Set Session For Recently Viewed Items\
+        if(empty(Session::get('session_id'))){
+            $session_id = md5(uniqid(rand(), true));
+        }else{
+            $session_id = Session::get('session_id');
+        }
+        Session::put('session_id',$session_id);
+
+        //Insert product in recently_viewed_items_table if not already exists
+        $countRecentlyViewedItems = DB::table('recently_viewed_items')->where(['product_id'=>$id,'session_id'=>$session_id])->count();
+        if($countRecentlyViewedItems == 0){
+            DB::table('recently_viewed_items')->insert(['product_id'=>$id,'session_id'=>$session_id]);
+        }
+
+        //Get Recently Viewed Products Ids
+        $recentlyProductIds = DB::table('recently_viewed_items')->select('product_id')->where('product_id','!=',$id)->where('session_id',$session_id)->inRandomOrder()->get()->take(4)->pluck('product_id');
+        // dd($recentlyProductIds);
+
+        //Get Recently Viewed Products
+        $recentlyViewedProducts = Product::with('images')->whereIn('id',$recentlyProductIds)->get()->toArray();
+
+        return view('front.products.detail')->with(compact('productDetails','categoryDetails','groupProducts','relatedProducts','recentlyViewedProducts'));
+    }
+
+    public function getAttributePrice(Request $request){
+        if($request->ajax()){
+            $data = $request -> all();
+            // echo "<pre>";print_r($data); die;
+            $getAttributePrice = Product::getAttributePrice($data['product_id'],$data['style']);
+            // echo "<pre>";print_r($getAttributePrice); die;
+            return $getAttributePrice;
         }
     }
 }

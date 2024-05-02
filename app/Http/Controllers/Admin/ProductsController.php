@@ -136,32 +136,23 @@ class ProductsController extends Controller
 
            // Calculate final price based on product discount
             // Initialize final price with the original product price
-            $product->final_price = $data['product_price'];
+                $product->final_price = $data['product_price'];
 
-            // Check if a product discount is available
-            if (isset($data['product_discount']) && !empty($data['product_discount']) && $data['product_discount'] > 0) {
-                // Apply product discount
-                $product->discount_type = 'product';
-                $product->final_price -= ($product->final_price * $data['product_discount'] / 100);
-            }
-
-            // Check if a category discount is available
-            if (isset($data['category_id'])) {
-                $category_discount = Category::where('id', $data['category_id'])->value('category_discount');
-                if ($category_discount > 0) {
-                    // Apply category discount
-                    if ($product->discount_type === 'product') {
-                        // If both product and category discounts are available, apply the category discount on top of the product discount
-                        $product->discount_type = 'product: ' . $data['product_discount'] . '%, category: ' . $category_discount . '%';
-                        $product->final_price -= ($product->final_price * $category_discount / 100);
-                    } else {
-                        // If only the category discount is available, apply it
-                        $product->discount_type = 'category';
-                        $product->final_price -= ($product->final_price * $category_discount / 100);
+                // Check if a product discount is available
+                if (isset($data['product_discount']) && !empty($data['product_discount']) && $data['product_discount'] > 0) {
+                    // Apply product discount
+                    $product->discount_type = 'product: ' . $data['product_discount'] . '%';
+                    $product->final_price -= ($product->final_price * $data['product_discount'] / 100);
+                } else {
+                    // If product discount is null or zero, apply category discount
+                    if (isset($data['category_id'])) {
+                        $category_discount = Category::where('id', $data['category_id'])->value('category_discount');
+                        if ($category_discount > 0) {
+                            $product->discount_type = 'category: ' . $category_discount . '%';
+                            $product->final_price -= ($product->final_price * $category_discount / 100);
+                        }
                     }
                 }
-            }
-
 
             $product->product_weight = $data['product_weight'];
             $product->description = $data['description'];
@@ -182,7 +173,7 @@ class ProductsController extends Controller
             if(!empty($data['is_bestseller'])){
                 $product -> is_bestseller = $data['is_bestseller'];
             }else{
-                $product -> is_bestseller = 'No';
+                $product -> is_bestseller = 'No';   
             }
             $product->status = 1;
             $product->save();

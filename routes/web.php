@@ -34,6 +34,12 @@ Route::namespace('App\Http\Controllers\Front')->group(function () {
     foreach ($catUrls as $key => $url) {
         Route::get($url, 'ProductController@listing');
     }
+
+    //Product Details Page
+    Route::get('product/{id}', 'ProductController@detail');
+
+    //Get Product Attribute Price
+    Route::post('get-attribute-price','ProductController@getAttributePrice');
 });
 
 Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function () {
