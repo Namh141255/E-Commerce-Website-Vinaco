@@ -27,4 +27,31 @@ $(document).ready(function(){
             }
         })
     })
+
+    $("#addToCart").submit(function(){
+        var formData = $(this).serialize();
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url:'/add-to-cart',
+            type:'post',
+            data:formData,
+            success:function(resp){
+                if(resp['status']==true){
+                    // alert(resp['message']);
+                    $('.print-success-msg').show();
+                    $('.print-success-msg').delay(3000).fadeOut('slow');
+                    $('.print-success-msg').html("<div class='success'><span class='closebtn' onclick='this.parentElement.style.display='none';'>&times;</span>"+resp['message']+"</div>");
+                }else{
+                    // alert(resp['message']);
+                    $('.print-error-msg').show();
+                    $('.print-error-msg').delay(3000).fadeOut('slow');
+                    $('.print-error-msg').html("<div class='alert'><span class='closebtn' onclick='this.parentElement.style.display='none';'>&times;</span>"+resp['message']+"</div>");
+                }
+            },error:function(){
+                alert("Error");
+            }
+        });
+    })
 })

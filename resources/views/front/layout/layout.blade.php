@@ -20,6 +20,10 @@
         <link rel="stylesheet" href="{{ url('front/css/utility.css') }}">
         <!--====== App ======-->
         <link rel="stylesheet" href="{{ url('front/css/app.css') }}">
+        <!--====== Custom ======-->
+        <link rel="stylesheet" href="{{ url('front/css/custom.css') }}">
+
+
     </head>
     <body class="config">
         <div class="preloader is-active">
