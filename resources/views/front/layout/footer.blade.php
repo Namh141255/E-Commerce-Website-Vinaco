@@ -6,13 +6,13 @@
                     <div class="outer-footer__content u-s-m-b-40">
                         <span class="outer-footer__content-title">Contact Us</span>
                         <div class="outer-footer__text-wrap"><i class="fas fa-home"></i>
-                            <span>SITEMAKERS.IN</span>
+                            <span>VINACO.CO</span>
                         </div>
                         <div class="outer-footer__text-wrap"><i class="fas fa-phone-volume"></i>
-                            <span>(+91) 900 000 000</span>
+                            <span>(+84) 567 341 218</span>
                         </div>
                         <div class="outer-footer__text-wrap"><i class="far fa-envelope"></i>
-                            <span>contact@sitemakers.in</span>
+                            <span>vinaco@copod.com</span>
                         </div>
                         <div class="outer-footer__social">
                             <ul>
@@ -107,18 +107,10 @@
                     <div class="lower-footer__content">
                         <div class="lower-footer__copyright">
                             <span>Copyright © 2023</span>
-                            <a href="index.html">SiteMakers.in</a>
+                            <a href="index.html">Vinaco.co</a>
                             <span>All Right Reserved</span>
                         </div>
                         <div class="lower-footer__payment">
-                            <ul>
-                                <li><i class="fab fa-cc-stripe"></i></li>
-                                <li><i class="fab fa-cc-paypal"></i></li>
-                                <li><i class="fab fa-cc-mastercard"></i></li>
-                                <li><i class="fab fa-cc-visa"></i></li>
-                                <li><i class="fab fa-cc-discover"></i></li>
-                                <li><i class="fab fa-cc-amex"></i></li>
-                            </ul>
                         </div>
                     </div>
                 </div>

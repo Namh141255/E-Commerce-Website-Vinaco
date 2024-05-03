@@ -2,6 +2,7 @@
 use App\Models\Category;
 //Get Categories and their subcategories
 $categories = Category::getCategories();
+$totalCartItems = totalCartItems();
 ?>
 <!--====== Main Header ======-->
 <header class="header--style-1">
@@ -12,7 +13,7 @@ $categories = Category::getCategories();
             <div class="primary-nav">
                 <!--====== Main Logo ======-->
                 <a class="main-logo" href="index.html">
-                <img src="{{ asset('front/images/logo/logo-1.png') }}" alt=""></a>
+                <img style="width: 250px; height: 100px;" src="{{ asset('front/images/logo/logo-1.png') }}" alt=""></a>
                 <!--====== End - Main Logo ======-->
                 <!--====== Search Form ======-->
                 <form class="main-form">
@@ -34,22 +35,25 @@ $categories = Category::getCategories();
                                 <!--====== Dropdown ======-->
                                 <span class="js-menu-toggle"></span>
                                 <ul style="width:120px">
+                                    @if(Auth::check())
                                     <li>
-                                        <a href="dashboard.html"><i class="fas fa-user-circle u-s-m-r-6"></i>
+                                        <a href="{{ url('user/account') }}"><i class="fas fa-user-circle u-s-m-r-6"></i>
                                         <span>Account</span></a>
                                     </li>
                                     <li>
-                                        <a href="signup.html"><i class="fas fa-user-plus u-s-m-r-6"></i>
-                                        <span>Signup</span></a>
+                                        <a href="{{ url('user/logout') }}"><i class="fas fa-lock-open u-s-m-r-6"></i>
+                                        <span>Sign out</span></a>
+                                    </li>
+                                    @else
+                                    <li>
+                                        <a href="{{ url('user/register') }}"><i class="fas fa-user-plus u-s-m-r-6"></i>
+                                        <span>Sign up</span></a>
                                     </li>
                                     <li>
-                                        <a href="signin.html"><i class="fas fa-lock u-s-m-r-6"></i>
-                                        <span>Signin</span></a>
+                                        <a href="{{ url('user/login') }}"><i class="fas fa-lock u-s-m-r-6"></i>
+                                        <span>Sign in</span></a>
                                     </li>
-                                    <li>
-                                        <a href="signup.html"><i class="fas fa-lock-open u-s-m-r-6"></i>
-                                        <span>Signout</span></a>
-                                    </li>
+                                    @endif
                                 </ul>
                                 <!--====== End - Dropdown ======-->
                             </li>
@@ -807,7 +811,7 @@ $categories = Category::getCategories();
                 <!--====== Dropdown Main plugin ======-->
                 <div class="menu-init" id="navigation3">
                     <button class="btn btn--icon toggle-button toggle-button--secondary fas fa-shopping-bag toggle-button-shop" type="button"></button>
-                    <span class="total-item-round">2</span>
+                    <span class="total-item-round totalCartItems">{{$totalCartItems}}</span>
                     <!--====== Menu ======-->
                     <div class="ah-lg-mode">
                         <span class="ah-close">✕ Close</span>
@@ -820,84 +824,12 @@ $categories = Category::getCategories();
                                 <a href="wishlist.html"><i class="far fa-heart"></i></a>
                             </li>
                             <li class="has-dropdown">
-                                <a class="mini-cart-shop-link"><i class="fas fa-shopping-bag"></i>
-                                <span class="total-item-round">3</span></a>
+                                <a class="mini-cart-shop-link "><i class="fas fa-shopping-bag"></i>
+                                <span class="total-item-round totalCartItems">{{$totalCartItems}}</span></a>
                                 <!--====== Dropdown ======-->
                                 <span class="js-menu-toggle"></span>
-                                <div class="mini-cart">
-                                    <!--====== Mini Product Container ======-->
-                                    <div class="mini-product-container gl-scroll u-s-m-b-15">
-                                        <!--====== Card for mini cart ======-->
-                                        <div class="card-mini-product">
-                                            <div class="mini-product">
-                                                <div class="mini-product__image-wrapper">
-                                                    <a class="mini-product__link" href="product-detail.html">
-                                                    <img class="u-img-fluid" src="{{ asset('front/images/product/sitemakers-tshirt.png') }}" alt=""></a>
-                                                </div>
-                                                <div class="mini-product__info-wrapper">
-                                                    <span class="mini-product__category">
-                                                    <a href="shop-side-version-2.html">Brand Name</a></span>
-                                                    <span class="mini-product__name">
-                                                    <a href="product-detail.html">Product Name</a></span>
-                                                    <span class="mini-product__quantity">1 x</span>
-                                                    <span class="mini-product__price">₹900</span>
-                                                </div>
-                                            </div>
-                                            <a class="mini-product__delete-link far fa-trash-alt"></a>
-                                        </div>
-                                        <!--====== End - Card for mini cart ======-->
-                                        <!--====== Card for mini cart ======-->
-                                        <div class="card-mini-product">
-                                            <div class="mini-product">
-                                                <div class="mini-product__image-wrapper">
-                                                    <a class="mini-product__link" href="product-detail.html">
-                                                    <img class="u-img-fluid" src="{{ asset('front/images/product/sitemakers-tshirt.png') }}" alt=""></a>
-                                                </div>
-                                                <div class="mini-product__info-wrapper">
-                                                    <span class="mini-product__category">
-                                                    <a href="shop-side-version-2.html">Brand Name</a></span>
-                                                    <span class="mini-product__name">
-                                                    <a href="product-detail.html">Product Name</a></span>
-                                                    <span class="mini-product__quantity">1 x</span>
-                                                    <span class="mini-product__price">₹900</span>
-                                                </div>
-                                            </div>
-                                            <a class="mini-product__delete-link far fa-trash-alt"></a>
-                                        </div>
-                                        <!--====== End - Card for mini cart ======-->
-                                        <!--====== Card for mini cart ======-->
-                                        <div class="card-mini-product">
-                                            <div class="mini-product">
-                                                <div class="mini-product__image-wrapper">
-                                                    <a class="mini-product__link" href="product-detail.html">
-                                                    <img class="u-img-fluid" src="{{ asset('front/images/product/sitemakers-tshirt.png') }}" alt=""></a>
-                                                </div>
-                                                <div class="mini-product__info-wrapper">
-                                                    <span class="mini-product__category">
-                                                    <a href="shop-side-version-2.html">Brand Name</a></span>
-                                                    <span class="mini-product__name">
-                                                    <a href="product-detail.html">Product Name</a></span>
-                                                    <span class="mini-product__quantity">1 x</span>
-                                                    <span class="mini-product__price">₹900</span>
-                                                </div>
-                                            </div>
-                                            <a class="mini-product__delete-link far fa-trash-alt"></a>
-                                        </div>
-                                        <!--====== End - Card for mini cart ======-->
-                                    </div>
-                                    <!--====== End - Mini Product Container ======-->
-                                    <!--====== Mini Product Statistics ======-->
-                                    <div class="mini-product-stat">
-                                        <div class="mini-total">
-                                            <span class="subtotal-text">SUBTOTAL</span>
-                                            <span class="subtotal-value">₹2700</span>
-                                        </div>
-                                        <div class="mini-action">
-                                            <a class="mini-link btn--e-brand-b-2" href="checkout.html">PROCEED TO CHECKOUT</a>
-                                            <a class="mini-link btn--e-transparent-secondary-b-2" href="cart.html">VIEW CART</a>
-                                        </div>
-                                    </div>
-                                    <!--====== End - Mini Product Statistics ======-->
+                                <div class="mini-cart" id="appendMiniCartItems">
+                                    @include('front.layout.header_cart_items')
                                 </div>
                                 <!--====== End - Dropdown ======-->
                             </li>

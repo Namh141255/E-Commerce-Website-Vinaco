@@ -51,15 +51,13 @@
                         <div>
                             <div class="print-error-msg"></div>
                             <div class="print-success-msg"></div>
-                            <span class="pd-detail__name">{{$productDetails['product_name']}}</span></div>
-                        <div>
-                            <div class="pd-detail__inline getAttributePrice">
-
-                                <span class="pd-detail__price">${{ $productDetails['final_price'] }}</span>
-                                @if($productDetails['discount_type'] != "")
-                                <span class="pd-detail__discount">({{ $productDetails['product_discount'] }}% OFF)</span><del class="pd-detail__del">${{ $productDetails['product_price'] }}</del>
-                            </div>
-                                @endif
+                            <span class="pd-detail__name">{{$productDetails['product_name']}}</span>
+                        </div>
+                        <div class="pd-detail__inline getAttributePrice">
+                            <span class="pd-detail__price">${{ $productDetails['final_price'] }}</span>
+                            @if($productDetails['discount_type'] != "")
+                            <span class="pd-detail__discount">({{ $productDetails['product_discount'] }}% OFF)</span><del class="pd-detail__del">${{ $productDetails['product_price'] }}</del>
+                            @endif
                         </div>
                         <div class="u-s-m-b-15">
                             <div class="pd-detail__rating gl-rating-style"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>

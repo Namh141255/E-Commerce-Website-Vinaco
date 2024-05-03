@@ -206,8 +206,134 @@ class ProductController extends Controller
             $item->product_qty = $data["qty"];
             $item->product_style = $data["style"];
             $item->Save();
-            $message = "Product added successfully in Cart!";
-            return response()->json(["status"=>true,"message"=>$message]);  
+
+             //Get Total Cart Item
+             $totalCartItems = totalCartItems();
+             $getCartItems = getCartItems();
+             
+
+            $message = "Product added successfully in Cart! <a style='color:#ffffff; text-decoration:underline;' href='/cart'>View Cart</a>";
+            return response()->json([
+                "status"=>true,
+                "message"=>$message,
+                'totalCartItems'=>$totalCartItems,
+                'minicartview'=> (String)View::make('front.layout.header_cart_items')->with(compact('getCartItems'))
+            ]);  
         }
+    }
+
+    public function cart(){
+        //get Cart Items
+        $getCartItems = getCartItems();
+        // dd($getCartItems);
+        return view('front.products.cart')->with(compact('getCartItems'));
+    }
+
+    public function updateCartItemQty(Request $request){
+        if($request -> ajax()){
+            $data = $request ->all();
+            // echo "<pre>";print_r($data); die;
+
+            //Get Cart Details
+            $cartDetails = Cart::find($data['cartid']);
+
+            //Get Available Product Stock
+            $availableStock = ProductsAttribute::select('stock')->where(['product_id'=>$cartDetails['product_id'],'style'=>$cartDetails['product_style']])->first()->toArray();
+            // echo "<pre>";print_r($availableStock); die;
+
+            //Check if desired Stock from user is available
+            if($data['new_qty']>$availableStock['stock']){
+                $getCartItems = getCartItems();
+                return response()->json([
+                    'status'=> false,
+                    'message'=>"Product Stock is not available",
+                    'view'=> (String)View::make('front.products.cart_items')->with(compact('getCartItems')),
+                    'minicartview'=> (String)View::make('front.layout.header_cart_items')->with(compact('getCartItems'))
+                ]); 
+            }
+
+            //Check if product Style is available
+            $availableStyle = ProductsAttribute::where(['product_id'=>$cartDetails['product_id'],'style'=>$cartDetails['product_style'],'status'=>1])->count();
+            if($availableStyle==0){
+                $getCartItems = getCartItems();
+                return response()->json([
+                    'status'=> false,
+                    'message'=>"Product Style is not available. Please remove and choose another one!",
+                    'view'=> (String)View::make('front.products.cart_items')->with(compact('getCartItems')),
+                    'minicartview'=> (String)View::make('front.layout.header_cart_items')->with(compact('getCartItems'))
+                ]);
+            }
+            // Update the Cart Item Qty
+            Cart::where('id',$data['cartid'])->update(['product_qty'=>$data['new_qty']]);
+
+            //Get Update Cart Items
+            $getCartItems = getCartItems();
+            // dd($getCartItems);
+
+            //Get Total Cart Item
+            $totalCartItems = totalCartItems(); 
+
+            //Return the Updated Cart Items
+            return response()->json([
+                'status'=> true,
+                'totalCartItems'=> $totalCartItems,
+                'view'=> (String)View::make('front.products.cart_items')->with(compact('getCartItems')),
+                'minicartview'=> (String)View::make('front.layout.header_cart_items')->with(compact('getCartItems'))
+            ]);
+
+        }
+    }
+
+    public function deleteCartItem(Request $request){
+        if($request -> ajax()){
+            $data = $request ->all();
+            Cart::where('id',$data['cartid'])->delete();
+            // echo "<pre>";print_r($data); die;
+
+            //Get Update Cart Items
+            $getCartItems = getCartItems();
+
+            //Get Total Cart Item
+            $totalCartItems = totalCartItems();
+
+            //Return the Updated Cart Items
+            return response()->json([
+                'status'=> true,
+                'totalCartItems'=> $totalCartItems,
+                'view'=> (String)View::make('front.products.cart_items')->with(compact('getCartItems')),
+                'minicartview'=> (String)View::make('front.layout.header_cart_items')->with(compact('getCartItems'))
+            ]);
+        }
+
+        
+    }
+
+    public function emptyCart(Request $request){
+        if($request -> ajax()){
+            //Empty cart
+            emptyCart();
+            
+            //Get Update Cart Items
+            $getCartItems = getCartItems();
+
+            //Get Total Cart Item
+            $totalCartItems = totalCartItems();
+
+            //Return the Updated Cart Items
+            return response()->json([
+                'status'=> true,
+                'totalCartItems'=> $totalCartItems,
+                'view'=> (String)View::make('front.products.cart_items')->with(compact('getCartItems')),
+                'minicartview'=> (String)View::make('front.layout.header_cart_items')->with(compact('getCartItems'))
+            ]);
+        }
+
+        
+    }
+
+    public function checkout(){
+        $getCartItems = getCartItems();
+
+        return view('front.products.checkout')->with(compact('getCartItems'));
     }
 }

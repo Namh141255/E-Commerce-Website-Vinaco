@@ -11,7 +11,7 @@
         <meta name="description" content="">
         <meta name="author" content="SiteMakers.in">
         <link href="images/favicon.png" rel="shortcut icon">
-        <title>Laravel E-commerce Template - By SiteMakers.in</title>
+        <title>Vina.Co</title>
         <!--====== Google Font ======-->
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet">
         <!--====== Vendor Css ======-->
@@ -26,6 +26,9 @@
 
     </head>
     <body class="config">
+        <div class="loader">
+            <img src="{{ asset('front/images/loading.gif') }}" alt="loading..." />
+        </div>
         <div class="preloader is-active">
             <div class="preloader__wrap">
                 <img class="preloader__img" src="{{ asset('front/images/preloader.png') }}" alt="">

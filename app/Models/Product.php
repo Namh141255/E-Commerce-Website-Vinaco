@@ -36,6 +36,7 @@ class Product extends Model
 
         //For Getting Product Discount
         $productDetails = Product::select(['product_discount','category_id'])->where('id',$product_id)->first()->toArray();
+        
         //For Getting Category Discount
         $categoryDetails = Category::select(['category_discount'])->where('id',$productDetails['category_id'])->first()->toArray();
 

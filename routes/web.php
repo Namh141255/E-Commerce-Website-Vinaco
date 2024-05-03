@@ -43,6 +43,35 @@ Route::namespace('App\Http\Controllers\Front')->group(function () {
 
     //Add to Cart
     Route::post('/add-to-cart','ProductController@addToCart');
+
+    //Shopping Cart
+    Route::get('cart', 'ProductController@cart');
+
+    //Update Cart Item Qty
+    Route::post('update-cart-item-qty','ProductController@updateCartItemQty');
+
+    //Delete Cart Item
+    Route::post('delete-cart-item','ProductController@deleteCartItem');
+
+    //Empty Cart
+    Route::post('empty-cart','ProductController@emptyCart');
+
+    //User Login
+    Route::match(['get','post'],'user/login','UserController@loginUser')->name('login');
+
+    Route::group(['middleware'=>['auth']],function(){
+        //User Logout
+        Route::get('user/logout','UserController@logoutUser');
+
+        //User Account
+        Route::match(['get','post'],'user/account','UserController@account');
+
+        //Checkout
+        Route::match(['get','post'],'checkout','ProductController@checkout');
+    });
+    
+    //User Register
+    Route::match(['get','post'],'user/register','UserController@registerUser');
 });
 
 Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function () {

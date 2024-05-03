@@ -1,4 +1,4 @@
-<div class="modal fade new-l" id="newsletter-modal">
+<!-- <div class="modal fade new-l" id="newsletter-modal">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content modal--shadow">
             <button class="btn new-l__dismiss fas fa-times" type="button" data-dismiss="modal"></button>
@@ -36,4 +36,4 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
